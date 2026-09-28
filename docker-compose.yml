@@ -1,0 +1,8 @@
+services:
+  waternet:
+    build: .
+    image: waternet-balance:1.0
+    container_name: waternet-balance
+    ports:
+      - "8000:8000"
+    restart: unless-stopped

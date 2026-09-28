@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>闭环供水管网平衡台</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="topbar">
+  <h1>闭环供水管网平衡台</h1>
+  <p class="subtitle">录入节点与管段，求解稳态水头、管段有符号流量与水源供水量（H起 − H终 = r·q·|q|）</p>
+</header>
+
+<main class="layout">
+  <section class="panel">
+    <div class="panel-head">
+      <h2>① 节点（2～10 个，恰 1 个水源）</h2>
+      <div class="btn-row">
+        <button type="button" id="add-node" class="btn">＋ 节点</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table id="node-table">
+        <thead>
+          <tr><th>节点编号</th><th>类型</th><th>固定水头（水源）</th><th>需水量（用水节点）</th><th></th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>② 管段（1～16 根，正阻力，端点唯一）</h2>
+      <div class="btn-row">
+        <button type="button" id="add-pipe" class="btn">＋ 管段</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table id="pipe-table">
+        <thead>
+          <tr><th>管段编号</th><th>起点</th><th>终点</th><th>阻力 r</th><th></th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>③ 求解</h2>
+      <div class="btn-row">
+        <button type="button" id="load-sample" class="btn ghost">载入示例</button>
+        <button type="button" id="clear-all" class="btn ghost">清空</button>
+        <button type="button" id="solve" class="btn primary">求解稳态</button>
+      </div>
+    </div>
+    <div class="controls">
+      <label for="min-head">最低水头预警（可空）：</label>
+      <input type="text" id="min-head" placeholder="例如 20" inputmode="decimal">
+      <span class="hint">水头低于该值的节点会标红</span>
+    </div>
+  </section>
+
+  <div id="message" class="banner" hidden></div>
+
+  <section class="panel" id="summary-panel" hidden>
+    <h2>④ 结果总览</h2>
+    <div id="summary" class="summary-grid"></div>
+  </section>
+
+  <section class="panel wide">
+    <h2>⑤ 网络图（可拖动节点调整布局；箭头为实际流向）</h2>
+    <svg id="graph" viewBox="0 0 900 520" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="legend">
+      <span class="lg"><i class="dot src"></i>水源（固定水头）</span>
+      <span class="lg"><i class="dot dem"></i>用水节点</span>
+      <span class="lg"><i class="dot low"></i>低于最低水头</span>
+      <span class="lg"><i class="line-demo"></i>管段（粗细 ∝ |q|）</span>
+      <span class="lg"><i class="arr-demo"></i>流向</span>
+    </div>
+  </section>
+
+  <section class="panel wide" id="node-result-panel" hidden>
+    <h2>⑥ 节点结果</h2>
+    <div class="table-wrap">
+      <table id="node-result-table">
+        <thead>
+          <tr><th>节点</th><th>类型</th><th>稳态水头 H</th><th>需水量</th><th>净流入量</th><th>守恒残差</th><th>状态</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel wide" id="pipe-result-panel" hidden>
+    <h2>⑦ 管段结果</h2>
+    <div class="table-wrap">
+      <table id="pipe-result-table">
+        <thead>
+          <tr><th>管段</th><th>录入方向</th><th>阻力 r</th><th>有符号流量 q</th><th>实际流向</th><th>有符号压降 H起−H终</th><th>压降残差</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">本地运行 · FastAPI + SciPy · 容差 1×10⁻⁶</footer>
+
+<script src="/app.js"></script>
+</body>
+</html>
